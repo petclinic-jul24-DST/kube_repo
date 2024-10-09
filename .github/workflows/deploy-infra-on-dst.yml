@@ -1,4 +1,4 @@
-name: Deploy lates images on DTS via Terraform apply
+name: Deploy lates images on DST via Terraform apply
 
 on:
   push:
@@ -34,18 +34,18 @@ jobs:
         echo "Known hosts:"
         cat ~/.ssh/known_hosts
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_DTS_PRIVATE_KEY }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_DST_PRIVATE_KEY }}
 
     - name: Copy script to server
       run: |
         echo "Copy script to server with IP: ${SERVER_IP}"
-        scp -o StrictHostKeyChecking=no infra/scripts/deploy-on-dts.sh ubuntu@${{ steps.extract_ip.outputs.server_ip }}:/home/ubuntu/
+        scp -o StrictHostKeyChecking=no infra/scripts/deploy-on-dst.sh ubuntu@${{ steps.extract_ip.outputs.server_ip }}:/home/ubuntu/
 
     - name: Run script via SSH
       run: |
         SERVER_IP=${{ steps.extract_ip.outputs.server_ip }}
         echo "Deploying to server with IP: $SERVER_IP"
         ssh -o StrictHostKeyChecking=no ubuntu@$SERVER_IP << 'EOF'
-          chmod +x /home/ubuntu/deploy-on-dts.sh
-          /home/ubuntu/deploy-on-dts.sh
+          chmod +x /home/ubuntu/deploy-on-dst.sh
+          /home/ubuntu/deploy-on-dst.sh
         EOF
