@@ -4,7 +4,7 @@ name: Docker-Build and Push Docker Image to DockerHub
 on:
   push:
     branches:
-      - prod-branch-main
+      - main
 
 jobs:
   build:
