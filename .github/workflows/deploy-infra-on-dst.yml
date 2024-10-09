@@ -1,9 +1,9 @@
-name: Deploy lates images on DST via Terraform apply
+name: Deploy latest images on DST via Terraform apply
 
 on:
   push:
     branches:
-      - prod-branch-main
+      - main
 
 jobs:
   deploy:
