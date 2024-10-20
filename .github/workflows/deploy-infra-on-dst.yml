@@ -34,7 +34,7 @@ jobs:
         echo "Known hosts:"
         cat ~/.ssh/known_hosts
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_DST_PUBLIC_KEY }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_DST_PRIVATE_KEY }}
 
     - name: Copy script to server
       run: |

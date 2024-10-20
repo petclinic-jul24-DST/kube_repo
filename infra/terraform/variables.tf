@@ -12,7 +12,7 @@ variable "ssh_user" {
 variable "ssh_private_key" {
   description = "SSH private key for authenticating."
   type        = string
-  default     = "~/.ssh/id_rsa.pub"
+  default     = "~/.ssh/id_rsa"
 }
 
 variable "example_variable" {
