@@ -18,10 +18,16 @@ jobs:
       - name: Extract Server IP
         id: extract_ip
         run: |
+          echo "Reading terraform/variables.tf for server_ip..."
+          grep -A 3 -E '^variable "server_ip"' terraform/variables.tf
           SERVER_IP=$(grep -A 3 -E '^variable "server_ip"' terraform/variables.tf | grep 'default' | sed -n 's/.*default *= *"\([^"]*\)".*/\1/p')
-          echo "SERVER_IP=${SERVER_IP}"
-          echo "##[set-output name=server_ip;]${SERVER_IP}"
           echo "Extracted Server IP: ${SERVER_IP}"
+          echo "SERVER_IP=${SERVER_IP}" >> $GITHUB_ENV
+        # run: |
+        #   SERVER_IP=$(grep -A 3 -E '^variable "server_ip"' terraform/variables.tf | grep 'default' | sed -n 's/.*default *= *"\([^"]*\)".*/\1/p')
+        #   echo "SERVER_IP=${SERVER_IP}"
+        #   echo "##[set-output name=server_ip;]${SERVER_IP}"
+        #   echo "Extracted Server IP: ${SERVER_IP}"
       
       # Step 3: Set up SSH using the PEM private key
       - name: Set up SSH with PEM private key
