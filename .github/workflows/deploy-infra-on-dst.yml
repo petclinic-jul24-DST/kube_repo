@@ -1,4 +1,4 @@
-name: Deploy latest images on DST via Terraform apply
+name: Deploy Latest Images on DST via Terraform Apply
 
 on:
   push:
@@ -18,9 +18,8 @@ jobs:
       - name: Extract Server IP
         id: extract_ip
         run: |
-          SERVER_IP=$(grep -oP 'default *= *"\K[^"]*' infra/terraform/variables.tf)
-          echo "SERVER_IP=${SERVER_IP}"
-          echo "server_ip=${SERVER_IP}" >> $GITHUB_ENV
+          SERVER_IP=$(grep -oP 'default *= *"\K[^"]*' infra/terraform/variables.tf | head -n 1)
+          echo "SERVER_IP=${SERVER_IP}" >> $GITHUB_ENV
 
       # Step 3: Set up SSH with the private key
       - name: Set up SSH with private key
