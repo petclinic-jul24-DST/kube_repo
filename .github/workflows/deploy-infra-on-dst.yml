@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SECRET_DST_PRIVATE_KEY }}" > ~/.ssh/data_enginering_machine.pem
-          chmod 600 ~/.ssh/data_enginering_machine.pem
+          chmod 400 ~/.ssh/data_enginering_machine.pem
           SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Extracted Server IP: $SERVER_IP"
 
@@ -56,6 +56,7 @@ jobs:
         run: |
           SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Copying script to server with IP: $SERVER_IP"
+          ls -l ~/.ssh/data_enginering_machine.pem
           scp -i ~/.ssh/data_enginering_machine.pem -o StrictHostKeyChecking=no infra/scripts/deploy-on-dst.sh ubuntu@$SERVER_IP:/home/ubuntu/
 
       # Step 5: Run script via SSH
