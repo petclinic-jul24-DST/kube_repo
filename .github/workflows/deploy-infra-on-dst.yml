@@ -56,14 +56,14 @@ jobs:
         run: |
           SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Copying script to server with IP: $SERVER_IP"
-          scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no scripts/deploy-on-dst.sh ubuntu@$SERVER_IP:/home/ubuntu/
+          scp -i ~/.ssh/data_enginering_machine.pem -o StrictHostKeyChecking=no infra/scripts/deploy-on-dst.sh ubuntu@$SERVER_IP:/home/ubuntu/
 
       # Step 5: Run script via SSH
       - name: Run script via SSH
         run: |
           SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Deploying to server with IP: $SERVER_IP"
-          ssh -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no ubuntu@$SERVER_IP << 'EOF'
+          ssh -i ~/.ssh/data_enginering_machine.pem -o StrictHostKeyChecking=no ubuntu@$SERVER_IP << 'EOF'
             chmod +x /home/ubuntu/deploy-on-dst.sh
             /home/ubuntu/deploy-on-dst.sh
           EOF
