@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql-stf
-  namespace: dev
+  namespace: default
   annotations:
     service.binding/type: "mysql"
     service.binding/host: "mysql.default.svc.cluster.local"
@@ -62,7 +62,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-service
-  namespace: dev
+  namespace: default
 spec:
   type: ClusterIP  # Specify service type
   ports:
