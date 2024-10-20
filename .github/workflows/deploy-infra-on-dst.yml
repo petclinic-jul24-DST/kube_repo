@@ -23,13 +23,22 @@ jobs:
           echo "Extracted Server IP: ${SERVER_IP}"
           echo "SERVER_IP=${SERVER_IP}" >> $GITHUB_ENV  # Set it as an environment variable
           echo "server_ip=${SERVER_IP}" >> $GITHUB_ENV # Use a different output name if necessary
-      
+       
+      # Debug
+      - name: Debug
+        run: |
+          echo "Private Key:"
+          cat ~/.ssh/id_rsa.pem || true
+          echo "Known hosts:"
+          cat ~/.ssh/known_hosts || true
+        
+
       # Step 3: Set up SSH using the PEM private key
       - name: Set up SSH with PEM private key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SECRET_DST_PRIVATE_KEY }}" > ~/.ssh/id_rsa.pem
-          chmod 600 ~/.ssh/id_rsa.pem
+          echo "${{ secrets.SECRET_DST_PRIVATE_KEY }}" > ~/.ssh/data_enginering_machine.pem
+          chmod 600 ~/.ssh/data_enginering_machine.pem
           SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Extracted Server IP: $SERVER_IP"
 
@@ -39,8 +48,9 @@ jobs:
             exit 1
           }
 
-          echo "Known hosts:"
-          cat ~/.ssh/known_hosts
+      # Print the current known_hosts
+      - name: Show known_hosts
+        run: cat ~/.ssh/known_hosts
 
       # Step 4: Copy script to server
       - name: Copy script to server
