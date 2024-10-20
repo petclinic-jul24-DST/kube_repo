@@ -14,6 +14,9 @@ RUN chmod +x ./mvnw
 # Resolve the project dependencies
 RUN ./mvnw dependency:resolve
 
+# List files for debugging
+RUN ls -l
+
 # Copy the source code to the container
 COPY ./src ./src
 
