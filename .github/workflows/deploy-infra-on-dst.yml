@@ -39,4 +39,4 @@ jobs:
       # Step 5: Run script via SSH
       - name: Run script via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ env.SERVER_IP}} 'bash -s' < /home/ubuntu/deploy-on-dst.sh
+          ssh -o StrictHostKeyChecking=no ubuntu@"${{ env.SERVER_IP}}" 'bash -s' < /home/ubuntu/deploy-on-dst.sh
