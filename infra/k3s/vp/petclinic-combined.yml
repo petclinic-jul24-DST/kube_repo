@@ -1,8 +1,3 @@
-# 
-# 1. Deployment
-# 2. Service as LoadBalancer not ClusterIP
-# 
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,20 +30,20 @@ spec:
         - name: SERVER_PORT
           value: "8080"
         - name: MYSQL_URL
-          value: "jdbc:mysql://mysql:3306/petclinic"  # Update this to match your MySQL service
+          value: "jdbc:mysql://mysql:3306/petclinic"  # Ensure MySQL service is available
         volumeMounts:
         - name: app-volume
           mountPath: /app
       volumes:
       - name: app-volume
         hostPath:
-          path: .  # The path to your application files
+          path: /your/specified/path  # Update to your specific path
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: petclinic-service
-  namespace: dev
+  namespace: default  # Change to default to match deployment
 spec:
   selector:
     app: petclinic-dep
@@ -56,5 +51,4 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-  type: LoadBalancer # tried before with loadbalancer 
----
+  type: LoadBalancer

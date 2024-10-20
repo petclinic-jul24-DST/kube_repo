@@ -26,8 +26,8 @@ resource "null_resource" "apply_k3s_deployment" {
       echo "Applying Kubernetes deployment"
       kubectl apply -f /home/ubuntu/kube_repo/infra/k3s/secrets/tls-secret.yml
       kubectl apply -f /home/ubuntu/kube_repo/infra/k3s/secrets/db-secret.yml
-      kubectl apply -f /home/ubuntu/kube_repo/infra/k3s/current/petclinic-combined.yml
-      kubectl apply -f /home/ubuntu/kube_repo/infra/k3s/current/ingress-traefik.yml
+      kubectl apply -f /home/ubuntu/kube_repo/infra/k3s/vp/petclinic-combined.yml
+      kubectl apply -f /home/ubuntu/kube_repo/infra/k3s/vp/ingress-traefik.yml
       kubectl apply -f /home/ubuntu/kube_repo/infra/k3s/db/db-config.yml
       kubectl apply -f /home/ubuntu/kube_repo/infra/k3s/db/db-mysql.yml
     EOT
