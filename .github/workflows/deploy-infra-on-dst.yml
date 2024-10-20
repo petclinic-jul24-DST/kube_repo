@@ -29,10 +29,18 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SECRET_DST_PRIVATE_KEY }}" > ~/.ssh/id_rsa.pem
           chmod 600 ~/.ssh/id_rsa.pem
-          ssh-keyscan -H ${{ steps.extract_ip.outputs.server_ip }} >> ~/.ssh/known_hosts
-          echo "Server IP is: ${{ steps.extract_ip.outputs.server_ip }}"
+          SERVER_IP=${{ steps.extract_ip.outputs.server_ip }}
+          echo "Extracted Server IP: $SERVER_IP"
+      
+          # Try to retrieve the SSH host keys
+          ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts || {
+          echo "Failed to run ssh-keyscan on $SERVER_IP"
+          exit 1
+          }
+    
           echo "Known hosts:"
           cat ~/.ssh/known_hosts
+
 
       # Step 4: Copy script to server
       - name: Copy script to server
