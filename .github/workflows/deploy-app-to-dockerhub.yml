@@ -25,7 +25,7 @@ jobs:
       # Build the Docker image
       - name: Build the Docker image
         run: |
-          docker buildx build --file app/dockerfile-app.yml --tag ${{ secrets.DOCKERHUB_USERNAME }}/jul24-petclinic:latest .
+          docker buildx build --file ./app/dockerfile-app.yml --tag ${{ secrets.DOCKERHUB_USERNAME }}/jul24-petclinic:latest .
 
 
       # Push the Docker image to DockerHub
