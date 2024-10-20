@@ -18,36 +18,25 @@ jobs:
       - name: Extract Server IP
         id: extract_ip
         run: |
-          SERVER_IP=$(grep -A 3 -E '^variable "server_ip_tf"' infra/terraform/variables.tf | grep 'default' | sed -n 's/.*default *= *"\([^"]*\)".*/\1/p')
+          SERVER_IP=$(grep -oP '(?<=default *= *")[^"]*' infra/terraform/variables.tf)
           echo "SERVER_IP=${SERVER_IP}"
-          echo "##[set-output name=server_ip;]${SERVER_IP}"
-          echo "Extracted Server IP: ${SERVER_IP}"
-      
+          echo "server_ip=${SERVER_IP}" >> $GITHUB_ENV
+
       # Step 3: Set up SSH with the private key
-      - name: Set up SSH with private-key
+      - name: Set up SSH with private key
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_DST_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ steps.extract_ip.outputs.server_ip }} >> ~/.ssh/known_hosts
-          echo "Server IP is: ${{ steps.extract_ip.outputs.server_ip }}"
-          echo "Known hosts:"
-          cat ~/.ssh/known_hosts
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_DST_PRIVATE_KEY }}
+          ssh-keyscan -H ${{ env.SERVER_IP }} >> ~/.ssh/known_hosts
 
       # Step 4: Copy script to server
       - name: Copy script to server
         run: |
-         echo "Copy script to server with IP: ${SERVER_IP}"
-         scp -o StrictHostKeyChecking=no infra/scripts/deploy-on-dst.sh ubuntu@${{ steps.extract_ip.outputs.server_ip }}:/home/ubuntu/
+          echo "Copying script to server with IP: ${{ env.SERVER_IP }}"
+          scp -o StrictHostKeyChecking=no infra/scripts/deploy-on-dst.sh ubuntu@${{ env.SERVER_IP }}:/home/ubuntu/
 
       # Step 5: Run script via SSH
       - name: Run script via SSH
         run: |
-          SERVER_IP=${{ steps.extract_ip.outputs.server_ip }}
-          echo "Deploying to server with IP: $SERVER_IP"
-          ssh -o StrictHostKeyChecking=no ubuntu@$SERVER_IP << 'EOF'
-            chmod +x /home/ubuntu/deploy-on-dst.sh
-            /home/ubuntu/deploy-on-dst.sh
-          EOF
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ env.SERVER_IP }} 'bash -s' < /home/ubuntu/deploy-on-dst.sh
