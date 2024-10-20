@@ -12,5 +12,6 @@ variable "ssh_user" {
 variable "ssh_private_key" {
   description = "SSH private key for authenticating."
   type        = string
-  default     = "${{ secrets.SSH_DST_PRIVATE_KEY }}"
+  // default     = "${{ secrets.SSH_DST_PRIVATE_KEY }}"  // This line should be removed
+  // If you want to enforce that it is provided, just remove the default value or set it as "".
 }
