@@ -22,16 +22,7 @@ jobs:
           SERVER_IP=$(grep -A 3 -E '^variable "server_ip"' infra/terraform/variables.tf | grep 'default' | sed -n 's/.*default *= *"\([^"]*\)".*/\1/p')
           echo "Extracted Server IP: ${SERVER_IP}"
           echo "SERVER_IP=${SERVER_IP}" >> $GITHUB_ENV  # Set it as an environment variable
-          echo "server_ip=${SERVER_IP}" >> $GITHUB_ENV # Use a different output name if necessary
-       
-      # Debug
-      - name: Debug
-        run: |
-          echo "Private Key:"
-          cat ~/.ssh/id_rsa.pem || true
-          echo "Known hosts:"
-          cat ~/.ssh/known_hosts || true
-        
+          echo "server_ip=${SERVER_IP}" >> $GITHUB_ENV # Use a different output name if necessary        
 
       # Step 3: Set up SSH using the PEM private key
       - name: Set up SSH with PEM private key
@@ -47,6 +38,14 @@ jobs:
             echo "Failed to run ssh-keyscan on $SERVER_IP"
             exit 1
           }
+
+      # Debug
+      - name: Debug
+        run: |
+          echo "Private Key:"
+          cat ~/.ssh/data_enginering_machine.pem || true
+          echo "Known hosts:"
+          cat ~/.ssh/known_hosts || true
 
       # Print the current known_hosts
       - name: Show known_hosts
