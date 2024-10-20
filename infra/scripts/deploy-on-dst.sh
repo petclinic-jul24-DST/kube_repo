@@ -48,7 +48,7 @@ else
 fi
 
 # Step 3: Navigate to the Terraform directory and deploy infrastructure
-cd /home/ubuntu/kube_repo/terraform
+cd /home/ubuntu/kube_repo/infra/terraform
 terraform init
 terraform plan
 terraform apply -auto-approve
