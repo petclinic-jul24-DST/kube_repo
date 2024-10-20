@@ -3,14 +3,16 @@ kind: Ingress
 metadata:
   name: petclinic-ingress
   namespace: default
-  annotations:
-    kubernetes.io/ingress.class: traefik
+  annotations: # important !!
+    kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
     traefik.ingress.kubernetes.io/tls: "true"  # Enabling TLS
+    traefik.ingress.kubernetes.io/tls.secret: "tls-secret"  # Referencing your existing TLS secret
 spec:
   tls:
   - hosts:
     - petclinic.ph-rustingheart.dns-dynamic.net
-    secretName: petclinic-tls-secret  # Name of the TLS secret
+    secretName: tls-secret  # Name of the TLS secret
   rules:
   - host: petclinic.ph-rustingheart.dns-dynamic.net
     http:
@@ -22,3 +24,4 @@ spec:
             name: petclinic-service
             port:
               number: 8080
+# without service and loadbalancer right now

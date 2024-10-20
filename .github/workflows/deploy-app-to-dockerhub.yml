@@ -25,9 +25,9 @@ jobs:
       # Build the Docker image
       - name: Build the Docker image
         run: |
-          docker build -f app/dockerfile-app.yml -t ${{ secrets.DOCKERHUB_USERNAME }}/jul24-petclinic:2.0 .
+          docker build -f app/dockerfile-app.yml -t ${{ secrets.DOCKERHUB_USERNAME }}/jul24-petclinic:latest
 
       # Push the Docker image to DockerHub
       - name: Push the Docker image
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/jul24-petclinic:2.0
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/jul24-petclinic:latest
