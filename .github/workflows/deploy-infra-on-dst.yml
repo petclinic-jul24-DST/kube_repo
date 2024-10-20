@@ -19,8 +19,8 @@ jobs:
         id: extract_ip
         run: |
           echo "Reading terraform/variables.tf for server_ip..."
-          grep -A 3 -E '^variable "server_ip"' terraform/variables.tf
-          SERVER_IP=$(grep -A 3 -E '^variable "server_ip"' terraform/variables.tf | grep 'default' | sed -n 's/.*default *= *"\([^"]*\)".*/\1/p')
+          grep -A 3 -E '^variable "server_ip"' infra/terraform/variables.tf
+          SERVER_IP=$(grep -A 3 -E '^variable "server_ip"' infra/terraform/variables.tf | grep 'default' | sed -n 's/.*default *= *"\([^"]*\)".*/\1/p')
           echo "Extracted Server IP: ${SERVER_IP}"
           echo "SERVER_IP=${SERVER_IP}" >> $GITHUB_ENV
         # run: |
