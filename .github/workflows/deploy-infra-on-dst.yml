@@ -28,8 +28,8 @@ jobs:
       - name: Set up SSH with PEM private key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SECRET_SSH_KEY }}" > ~/.ssh/data_enginering_machine.pem 
-          chmod 400 ~/.ssh/data_enginering_machine.pem
+          echo "${{ secrets.SECRET_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
           SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Extracted Server IP: $SERVER_IP"
 
@@ -43,7 +43,7 @@ jobs:
       - name: Debug
         run: |
           echo "Private Key:"
-          cat ~/.ssh/data_enginering_machine.pem || true
+          cat ~/.ssh/id_rsa || true
           echo "Known hosts:"
           cat ~/.ssh/known_hosts || true
 
@@ -56,16 +56,16 @@ jobs:
         run: |
           SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Copying script to server with IP: $SERVER_IP"
-          ls -l ~/.ssh/data_enginering_machine.pem
-          cat ~/.ssh/data_enginering_machine.pem.
-          scp -i ~/.ssh/data_enginering_machine.pem -o StrictHostKeyChecking=no infra/scripts/deploy-on-dst.sh ubuntu@$SERVER_IP:/home/ubuntu/
+          ls -l ~/.ssh/id_rsa
+          cat ~/.ssh/id_rsa
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no infra/scripts/deploy-on-dst.sh ubuntu@$SERVER_IP:/home/ubuntu/
 
       # Step 5: Run script via SSH
       - name: Run script via SSH
         run: |
           SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Deploying to server with IP: $SERVER_IP"
-          ssh -i ~/.ssh/data_enginering_machine.pem -o StrictHostKeyChecking=no ubuntu@$SERVER_IP << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$SERVER_IP << 'EOF'
             chmod +x /home/ubuntu/deploy-on-dst.sh
             /home/ubuntu/deploy-on-dst.sh
           EOF
