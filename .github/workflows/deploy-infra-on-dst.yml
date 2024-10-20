@@ -19,15 +19,10 @@ jobs:
         id: extract_ip
         run: |
           echo "Reading terraform/variables.tf for server_ip..."
-          grep -A 3 -E '^variable "server_ip"' infra/terraform/variables.tf
           SERVER_IP=$(grep -A 3 -E '^variable "server_ip"' infra/terraform/variables.tf | grep 'default' | sed -n 's/.*default *= *"\([^"]*\)".*/\1/p')
           echo "Extracted Server IP: ${SERVER_IP}"
-          echo "SERVER_IP=${SERVER_IP}" >> $GITHUB_ENV
-        # run: |
-        #   SERVER_IP=$(grep -A 3 -E '^variable "server_ip"' terraform/variables.tf | grep 'default' | sed -n 's/.*default *= *"\([^"]*\)".*/\1/p')
-        #   echo "SERVER_IP=${SERVER_IP}"
-        #   echo "##[set-output name=server_ip;]${SERVER_IP}"
-        #   echo "Extracted Server IP: ${SERVER_IP}"
+          echo "SERVER_IP=${SERVER_IP}" >> $GITHUB_ENV  # Set it as an environment variable
+          echo "server_ip=${SERVER_IP}" >> $GITHUB_ENV # Use a different output name if necessary
       
       # Step 3: Set up SSH using the PEM private key
       - name: Set up SSH with PEM private key
@@ -35,29 +30,29 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SECRET_DST_PRIVATE_KEY }}" > ~/.ssh/id_rsa.pem
           chmod 600 ~/.ssh/id_rsa.pem
-          SERVER_IP=${{ steps.extract_ip.outputs.server_ip }}
+          SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Extracted Server IP: $SERVER_IP"
-      
+
           # Try to retrieve the SSH host keys
           ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts || {
-          echo "Failed to run ssh-keyscan on $SERVER_IP"
-          exit 1
+            echo "Failed to run ssh-keyscan on $SERVER_IP"
+            exit 1
           }
-    
+
           echo "Known hosts:"
           cat ~/.ssh/known_hosts
-
 
       # Step 4: Copy script to server
       - name: Copy script to server
         run: |
-          echo "Copy script to server with IP: ${{ steps.extract_ip.outputs.server_ip }}"
-          scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no scripts/deploy-on-dst.sh ubuntu@${{ steps.extract_ip.outputs.server_ip }}:/home/ubuntu/
+          SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
+          echo "Copying script to server with IP: $SERVER_IP"
+          scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no scripts/deploy-on-dst.sh ubuntu@$SERVER_IP:/home/ubuntu/
 
       # Step 5: Run script via SSH
       - name: Run script via SSH
         run: |
-          SERVER_IP=${{ steps.extract_ip.outputs.server_ip }}
+          SERVER_IP=${{ env.SERVER_IP }}  # Access the environment variable set earlier
           echo "Deploying to server with IP: $SERVER_IP"
           ssh -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no ubuntu@$SERVER_IP << 'EOF'
             chmod +x /home/ubuntu/deploy-on-dst.sh
